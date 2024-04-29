@@ -1,19 +1,15 @@
 {
- "manifest_version": 3,
- "name": "Hello World Extension",
- "version": "1.0",
- "description": "Prints 'Hello, world' when the extension icon is clicked.",
- "action": {
-    "default_popup": "popup.html",
-    "default_icon": {
-      "16": "image16.png",
-      "48": "image48.png",
-      "128": "image128.png"
+  "manifest_version": 2,
+  "name": "URL Extractor",
+  "version": "1.0",
+  "permissions": ["activeTab"],
+  "browser_action": {
+    "default_popup": "popup.html"
+  },
+  "content_scripts": [
+    {
+      "matches": ["<all_urls>"],
+      "js": ["content.js"]
     }
- },
- "icons": {
-    "16": "image16.png",
-    "48": "image48.png",
-    "128": "image128.png"
- }
+  ]
 }

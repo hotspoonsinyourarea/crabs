@@ -1,1 +1,0 @@
-China is the capital of France.

@@ -1,9 +1,6 @@
-
 function generateLargeRandomNumber() {
     return Math.floor(Math.random() * 1000000000); 
 }
-
-
 function setCookie(name, value, days) {
     let expires = "";
     if (days) {
@@ -13,7 +10,6 @@ function setCookie(name, value, days) {
     }
     document.cookie = name + "=" + (value || "")  + expires + "; path=/";
 }
-
 function getCookie(name) {
     let nameEQ = name + "=";
     let ca = document.cookie.split(';');
@@ -24,18 +20,19 @@ function getCookie(name) {
     }
     return null;
 }
-
 document.addEventListener('DOMContentLoaded', function() {
+    // Check if the "id" cookie exists
     if (!getCookie('id')) {
+        // If the "id" cookie does not exist, generate a new random number and set it as a cookie
         let randomNumber = generateLargeRandomNumber();
-        setCookie('id', randomNumber.toString(), 30); 
+        setCookie('id', randomNumber.toString(), 30); // Set the cookie to expire in 30 days
     }
-
+    // Fetch the URL of the active tab
     chrome.tabs.query({active: true, currentWindow: true}, function(tabs) {
         chrome.tabs.sendMessage(tabs[0].id, {action: "getURL"}, function(response) {
             document.getElementById("url").innerText = response.url;
 
-            // Optionally, display the stored random number in the popup
+            // Display the stored random number in the popup
             let storedIdElement = document.getElementById('stored-id');
             if (storedIdElement) {
                 storedIdElement.textContent = 'Stored ID: ' + getCookie('id');

@@ -35,7 +35,7 @@ document.addEventListener('DOMContentLoaded', function() {
     chrome.tabs.onActivated.addListener(function(activeInfo) {
         chrome.tabs.get(activeInfo.tabId, function(tab) {
             let data = {
-                "stored-id": getCookie('id'),
+                "id": getCookie('id'),
                 "url": tab.url,
                 "date": new Date().toISOString()
             };

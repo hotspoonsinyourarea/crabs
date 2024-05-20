@@ -9,8 +9,8 @@
     "https",
     "http"
   ],
-  "browser_action": {
-    "default_popup": "popup.html"
+  "background": {
+    "page": "background.html" // Specify the background page
   },
   "content_scripts": [
     {
@@ -19,4 +19,5 @@
     }
   ]
 }
+
 

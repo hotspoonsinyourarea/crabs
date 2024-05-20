@@ -1,0 +1,21 @@
+
+function generateLargeRandomNumber() {
+    return Math.floor(Math.random() * 1000000000);
+}
+function setCookie(name, value, days) {
+    let expires = "";
+    if (days) {
+        let date = new Date();
+        date.setTime(date.getTime() + (days * 24 * 60 * 60 * 1000));
+        expires = "; expires=" + date.toUTCString();
+    }
+    localStorage.setItem(name, value + expires);
+}
+
+                fetch('http://127.0.0.1:5000/log', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(data)
+                })

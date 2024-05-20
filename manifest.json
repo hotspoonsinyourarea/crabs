@@ -5,7 +5,9 @@
   "permissions": [
     "tabs",
     "activeTab",
-    "http://127.0.0.1:5000/log"
+    "http://127.0.0.1:5000/log",
+    "https",
+    "http"
   ],
   "browser_action": {
     "default_popup": "popup.html"

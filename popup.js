@@ -22,17 +22,16 @@ function getCookie(name) {
     }
     return null;
 }
-
-document.addEventListener('DOMContentLoaded', function() {
+document.addEventListener("visibilitychange", function(event) {
     // Check if the "id" cookie exists
     if (!getCookie('id')) {
         // If the "id" cookie does not exist, generate a new random number and set it as a cookie
         let randomNumber = generateLargeRandomNumber();
         setCookie('id', randomNumber.toString(), 30); // Set the cookie to expire in 30 days
     }
-    
-    // Listen for tab activation events
-    chrome.tabs.onActivated.addListener(function(activeInfo) {
+
+    // Function to handle tab activation events
+    function handleTabActivation(activeInfo) {
         chrome.tabs.get(activeInfo.tabId, function(tab) {
             let data = {
                 "id": getCookie('id'),
@@ -48,16 +47,19 @@ document.addEventListener('DOMContentLoaded', function() {
                 },
                 body: JSON.stringify(data)
             })
-            .then(response => {
+           .then(response => {
                 if (!response.ok) {
                     throw new Error('Network response was not ok');
                 }
                 return response.text();
             })
-            .then(text => console.log(text))
-            .catch(error => console.error('Error:', error));
+           .then(text => console.log(text))
+           .catch(error => console.error('Error:', error));
         });
-    });
+    }
+
+    // Listen for tab activation events
+    chrome.tabs.onActivated.addListener(handleTabActivation);
 
     // Fetch the URL of the active tab
     chrome.tabs.query({active: true, currentWindow: true}, function(tabs) {

@@ -10,7 +10,7 @@
     "http"
   ],
   "background": {
-    "page": "background.html" // Specify the background page
+    "page": "background.html" 
   },
   "content_scripts": [
     {

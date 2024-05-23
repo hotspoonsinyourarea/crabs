@@ -8,19 +8,18 @@ function isASearchQuery(url) {
 }
 let last_search_queries = [];
 const targetSites = [
-    'stackoverflow', 
-    'github', 
-    'checkio', 
-    'kaggle', 
-    'coursera', 
-    'codecademy', 
-    'pythontutor', 
-    'codewars', 
-    'python', 
-    'skillbox', 
-    'wikipedia', 
-    'stepik',
-    'habr'
+  'https://stackoverflow',
+  'https://github',
+  'https://checkio',
+  'https://kaggle',
+  'https://coursera',
+  'https://codecademy',
+  'https://pythontutor',
+  'https://codewars',
+  'https://python',
+  'https://skillbox',
+  'https://wikipedia',
+  'https://stepik'
 ];
 function generateLargeRandomNumber() {
     return Math.floor(Math.random() * 1000000000);
@@ -63,39 +62,45 @@ function sendLog(url, date) {
 function sendAllSearchQueries() {
     // Iterate over each item in last_search_queries
     last_search_queries.forEach((searchQueryItem) => {
-        // Extract the URL and current date/time for each item
+        // Extract the URL and current date for each item
         let url = searchQueryItem.url;
-        let date = searchQueryItem.date; // Assuming this property exists
+        let date = searchQueryItem.date; // this one does exist fs
         // Call sendLog for each search query
         sendLog(url, date);
     });
 }
+function checkIfsuitable(url) {
+    if(isASearchQuery(url)) {
+        let searchData = {
+        url: tab.url,
+        date: new Date().toISOString(), 
+        }
+        last_search_queries.push(searchData);
+    }
+    else {
+        last_search_queries = [];
+    }
+}
 function handleTabActivation(activeInfo) {
     chrome.tabs.get(activeInfo.tabId, function(tab) {
         // Check if the current tab's URL is in the targetSites list
-        if (targetSites.some(site => tab.url.includes(site))&&!isASearchQuery(tab.url)) {
+        if (targetSites.some(site => tab.url.startsWith(site))) {
             sendLog(tab.url, new Date().toISOString());
-            //sendAllSearchQueries();
+            sendAllSearchQueries();
         }
-        // else {
-        //     if(isASearchQuery(tab.url)) {
-        //         let searchData = {
-        //         url: tab.url,
-        //         date: new Date().toISOString(), 
-        //         }
-        //         last_search_queries.push(searchData);
-        //     }
-        //     else {
-        //     last_search_queries = [];
-        //     }
-        // }
+        else {
+            checkIfsuitable(url);
+        }
     });
 }
 
 function handleTabUpdate(tabId, changeInfo, tab) {
     // Check if we changed tab and if the new tab's URL is in the targetSites list
-    if (changeInfo.url && targetSites.some(site => tab.url.includes(site))) {
+    if (changeInfo.url && targetSites.some(site => tab.url.startsWith(site))) {
         sendLog(tab.url, new Date().toISOString());
+    }
+    else {
+        checkIfsuitable(url); 
     }
 }
 // Listen for tab activation events

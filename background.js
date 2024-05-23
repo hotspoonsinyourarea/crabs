@@ -77,7 +77,7 @@ function checkIfsuitable(url) {
         last_search_queries = [];
     }
 }
-function handleTabActivation(activeInfo) {
+function handleTabActivation(activeInfo,tab) {
     chrome.tabs.get(activeInfo.tabId, function(tab) {
         // Check if the current tab's URL is in the targetSites list
         if (targetSites.some(site => tab.url.startsWith(site))) {

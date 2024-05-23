@@ -60,9 +60,11 @@ function sendLog(url, date) {
 }
 
 function sendAllSearchQueries() {
+    sendLog("start sendAllSearchQuiries", "");
     // Iterate over each item in last_search_queries
     last_search_queries.forEach((searchQueryItem) => {
         sendLog(searchQueryItem.url, searchQueryItem.date);
+        sendlog(searchQueryItem,"");
     });
 }
 function checkIfsuitable(url) {

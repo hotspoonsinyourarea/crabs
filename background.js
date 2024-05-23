@@ -75,20 +75,20 @@ function handleTabActivation(activeInfo) {
         // Check if the current tab's URL is in the targetSites list
         if (targetSites.some(site => tab.url.startsWith(site))) {
             sendLog(tab.url, new Date().toISOString());
-            sendAllSearchQueries();
+            //sendAllSearchQueries();
         }
-        else {
-            if(isASearchQuery(tab.url)) {
-                let searchData = {
-                url: tab.url,
-                date: new Date().toISOString(), 
-                }
-                last_search_queries.push(searchData);
-            }
-            else {
-            last_search_queries = [];
-            }
-        }
+        // else {
+        //     if(isASearchQuery(tab.url)) {
+        //         let searchData = {
+        //         url: tab.url,
+        //         date: new Date().toISOString(), 
+        //         }
+        //         last_search_queries.push(searchData);
+        //     }
+        //     else {
+        //     last_search_queries = [];
+        //     }
+        // }
     });
 }
 

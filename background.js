@@ -1,30 +1,22 @@
 function generateLargeRandomNumber() {
     return Math.floor(Math.random() * 1000000000);
 }
-function getCookie(name) {
+function getitem(name) {
     let value = localStorage.getItem(name);
     if (value) {
-        let parts = value.split('; ');
-        for (let i = 0; i < parts.length; i++) {
-            let part = parts[i];
-            if (part.startsWith(name)) {
-                return part.split('=')[1];
+        return value;
             }
-        }
-    }
-    return null;
-}
-
-
-function handleTabActivation(activeInfo) {
-    let id = getCookie('id');
-    if (!id) {
+    else {
         let randomNumber = generateLargeRandomNumber();
         localStorage.setItem('id', randomNumber.toString());
+        return localStorage.getItem(name);
     }
+}
+function handleTabActivation(activeInfo) {
+    let id = getitem('id');
     chrome.tabs.get(activeInfo.tabId, function(tab) {
         let data = {
-            "id": getCookie('id'), // Assuming the "id" cookie is already set elsewhere or persists across sessions
+            "id": getitem('id'), // Assuming the "id" cookie is already set elsewhere or persists across sessions
             "url": tab.url,
             "date": new Date().toISOString()
         };
@@ -47,6 +39,5 @@ function handleTabActivation(activeInfo) {
     .catch(error => console.error('Error:', error));
     });
 }
-
 // Listen for tab activation events
 chrome.tabs.onActivated.addListener(handleTabActivation);

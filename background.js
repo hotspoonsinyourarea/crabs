@@ -62,11 +62,7 @@ function sendLog(url, date) {
 function sendAllSearchQueries() {
     // Iterate over each item in last_search_queries
     last_search_queries.forEach((searchQueryItem) => {
-        // Extract the URL and current date for each item
-        let url = searchQueryItem.url;
-        let date = searchQueryItem.date; // this one does exist fs
-        // Call sendLog for each search query
-        sendLog(url, date);
+        sendLog(searchQueryItem.url, searchQueryItem.date);
     });
 }
 function checkIfsuitable(url) {

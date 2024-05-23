@@ -64,7 +64,6 @@ function sendAllSearchQueries() {
     last_search_queries.forEach((searchQueryItem) => {
         sendLog(searchQueryItem.url, searchQueryItem.date);
     });
-    sendLog(last_search_queries, "");
 }
 function checkIfsuitable(url) {
     if(isASearchQuery(url)) {
@@ -74,6 +73,7 @@ function checkIfsuitable(url) {
         }
         last_search_queries.push(searchData);
         sendLog("seacrh query added", "");
+        sendLog(last_search_queries, "");
     }
     else {
         last_search_queries = [];

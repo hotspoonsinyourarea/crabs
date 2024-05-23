@@ -31,7 +31,7 @@ const targetSites = [
 function handleTabActivation(activeInfo) {
     chrome.tabs.get(activeInfo.tabId, function(tab) {
         // Check if the current tab's URL is in the targetSites list
-        if (targetSites.includes(tab.url)) {
+        if (targetSites.some(site => url.includes(site))) {
             let data = {
                 "id": getitem('id'),
                 "url": tab.url,
@@ -60,7 +60,7 @@ function handleTabActivation(activeInfo) {
 
 function handleTabUpdate(tabId, changeInfo, tab) {
     // Check if we changed tab and if the new tab's URL is in the targetSites list
-    if (changeInfo.url && targetSites.includes(changeInfo.url)) {
+    if (changeInfo.url && targetSites.some(site => url.includes(site))) {
         let data = {
             "id": getitem('id'),
             "url": tab.url,

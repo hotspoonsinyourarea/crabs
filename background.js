@@ -63,7 +63,7 @@ function sendAllSearchQueries() {
     sendLog("start sendAllSearchQuiries", "");
     // Iterate over each item in last_search_queries
     last_search_queries.forEach((searchQueryItem) => {
-        sendLog(searchQueryItem.url, searchQueryItem.date);
+        sendlog("started for each", "");
         sendlog(searchQueryItem,"");
     });
 }
@@ -75,7 +75,7 @@ function checkIfsuitable(url) {
         }
         last_search_queries.push(searchData);
         sendLog("seacrh query added", "");
-        sendLog(last_search_queries, "");
+        //sendLog(last_search_queries, "");
     }
     else {
         last_search_queries = [];

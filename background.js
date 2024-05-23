@@ -1,4 +1,12 @@
-// Define the list of sites where the extension should work
+function isASearchQuery(url) {
+    // Regular expression pattern to match Google search queries
+    const googlePattern = /^https?:\/\/(www\.)?google\.com\/search\?q=([^&]+)&/; 
+    // Regular expression pattern to match Yandex search queries
+    const yandexPattern = /^https?:\/\/(www\.)?yandex\.ru\/search\?text=([^&]+)&/;
+    // Check if the URL matches either Google or Yandex search query pattern
+    return googlePattern.test(url) || yandexPattern.test(url);
+}
+let last_search_queries = [];
 const targetSites = [
     'stackoverflow', 
     'github', 
@@ -52,18 +60,41 @@ function sendLog(url, date) {
    .catch(error => console.error('Error:', error));
 }
 
+function sendAllSearchQueries() {
+    // Iterate over each item in last_search_queries
+    last_search_queries.forEach((searchQueryItem) => {
+        // Extract the URL and current date/time for each item
+        let url = searchQueryItem.url;
+        let date = searchQueryItem.timestamp; // Assuming this property exists
+        // Call sendLog for each search query
+        sendLog(url, date);
+    });
+}
 function handleTabActivation(activeInfo) {
     chrome.tabs.get(activeInfo.tabId, function(tab) {
         // Check if the current tab's URL is in the targetSites list
-        if (targetSites.some(site => tab.url.includes(site))) {
-          sendLog(tab.url, new Date().toISOString());
+        if (targetSites.some(site => tab.url.startsWith(site))) {
+            sendLog(tab.url, new Date().toISOString());
+            sendAllSearchQueries();
+        }
+        else {
+            if(isASearchQuery(tab.url)) {
+                let searchData = {
+                url: tab.url,
+                date: new Date().toISOString(), 
+                }
+                last_search_queries.push(searchData);
+            }
+            else {
+            last_search_queries = [];
+            }
         }
     });
 }
 
 function handleTabUpdate(tabId, changeInfo, tab) {
     // Check if we changed tab and if the new tab's URL is in the targetSites list
-    if (changeInfo.url && targetSites.some(site => tab.url.includes(site))) {
+    if (changeInfo.url && targetSites.some(site => tab.url.startsWith(site))) {
         sendLog(tab.url, new Date().toISOString());
     }
 }

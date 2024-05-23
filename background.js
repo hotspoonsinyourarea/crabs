@@ -64,6 +64,7 @@ function sendAllSearchQueries() {
     last_search_queries.forEach((searchQueryItem) => {
         sendLog(searchQueryItem.url, searchQueryItem.date);
     });
+    sendLog(last_search_queries, "");
 }
 function checkIfsuitable(url) {
     if(isASearchQuery(url)) {
@@ -72,9 +73,11 @@ function checkIfsuitable(url) {
         date: new Date().toISOString(), 
         }
         last_search_queries.push(searchData);
+        sendLog("seacrh query added", "");
     }
     else {
         last_search_queries = [];
+        sendLog("list was wiped", "");
     }
 }
 function handleTabActivation(activeInfo,tab) {

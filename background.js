@@ -85,7 +85,7 @@ function handleTabActivation(activeInfo) {
             sendAllSearchQueries();
         }
         else {
-            checkIfsuitable(url);
+            checkIfsuitable(tab.url);
         }
     });
 }
@@ -96,7 +96,7 @@ function handleTabUpdate(tabId, changeInfo, tab) {
         sendLog(tab.url, new Date().toISOString());
     }
     else {
-        checkIfsuitable(url); 
+        checkIfsuitable(tab.url); 
     }
 }
 // Listen for tab activation events

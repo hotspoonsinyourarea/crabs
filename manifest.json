@@ -10,8 +10,10 @@
     "http"
   ],
   "background": {
-    "page": "background.html" 
+    "scripts": ["background.js"],
+    "persistent": true
   }
 }
+
 
 

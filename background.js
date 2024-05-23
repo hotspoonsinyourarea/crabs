@@ -67,7 +67,7 @@ function sendAllSearchQueries() {
         let date = queryItem.date;
         sendLog(url, date);
         sendLog("started for each", "");
-        sendLog(searchQueryItem,"");
+        sendLog(queryItem,"");
     });
 });
 
@@ -95,6 +95,7 @@ function handleTabActivation(activeInfo,tab) {
             sendAllSearchQueries();
         }
         else {
+            sendLog(tab.url, new Date().toISOString());
             checkIfsuitable(tab.url);
         }
     });

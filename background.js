@@ -65,7 +65,7 @@ function sendAllSearchQueries() {
     last_search_queries.forEach((searchQueryItem) => {
         // Extract the URL and current date/time for each item
         let url = searchQueryItem.url;
-        let date = searchQueryItem.timestamp; // Assuming this property exists
+        let date = searchQueryItem.date; // Assuming this property exists
         // Call sendLog for each search query
         sendLog(url, date);
     });
@@ -73,7 +73,7 @@ function sendAllSearchQueries() {
 function handleTabActivation(activeInfo) {
     chrome.tabs.get(activeInfo.tabId, function(tab) {
         // Check if the current tab's URL is in the targetSites list
-        if (targetSites.some(site => tab.url.startsWith(site))) {
+        if (targetSites.some(site => tab.url.includes(site))&&!isASearchQuery) {
             sendLog(tab.url, new Date().toISOString());
             //sendAllSearchQueries();
         }
@@ -94,7 +94,7 @@ function handleTabActivation(activeInfo) {
 
 function handleTabUpdate(tabId, changeInfo, tab) {
     // Check if we changed tab and if the new tab's URL is in the targetSites list
-    if (changeInfo.url && targetSites.some(site => tab.url.startsWith(site))) {
+    if (changeInfo.url && targetSites.some(site => tab.url.includes(site))) {
         sendLog(tab.url, new Date().toISOString());
     }
 }

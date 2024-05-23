@@ -11,7 +11,8 @@ const targetSites = [
     'python', 
     'skillbox', 
     'wikipedia', 
-    'stepik'
+    'stepik',
+    'habr'
 ];
 function generateLargeRandomNumber() {
     return Math.floor(Math.random() * 1000000000);

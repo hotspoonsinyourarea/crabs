@@ -30,6 +30,12 @@ function getCookie(name) {
 
 // Function to handle tab activation events
 function handleTabActivation(activeInfo) {
+    let id = getCookie('id');
+    if (!id) {
+        // If the "id" cookie does not exist, generate a new random number and set it as a cookie
+        let randomNumber = generateLargeRandomNumber();
+        setCookie('id', randomNumber.toString(), 30); // Set the cookie to expire in 30 days
+    }
     chrome.tabs.get(activeInfo.tabId, function(tab) {
         let data = {
             "id": getCookie('id'), // Assuming the "id" cookie is already set elsewhere or persists across sessions

@@ -68,7 +68,7 @@ function sendAllSearchQueries() {
 function checkIfsuitable(url) {
     if(isASearchQuery(url)) {
         let searchData = {
-        url: tab.url,
+        url: url,
         date: new Date().toISOString(), 
         }
         last_search_queries.push(searchData);

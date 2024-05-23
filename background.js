@@ -73,7 +73,7 @@ function sendAllSearchQueries() {
 function handleTabActivation(activeInfo) {
     chrome.tabs.get(activeInfo.tabId, function(tab) {
         // Check if the current tab's URL is in the targetSites list
-        if (targetSites.some(site => tab.url.includes(site))&&!isASearchQuery) {
+        if (targetSites.some(site => tab.url.includes(site))&&!isASearchQuery(tab.url)) {
             sendLog(tab.url, new Date().toISOString());
             //sendAllSearchQueries();
         }

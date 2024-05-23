@@ -62,10 +62,15 @@ function sendLog(url, date) {
 function sendAllSearchQueries() {
     sendLog("start sendAllSearchQuiries", "");
     // Iterate over each item in last_search_queries
-    last_search_queries.forEach((searchQueryItem) => {
+    last_search_queries.forEach((queryItem) => {
+        let url = queryItem.url;
+        let date = queryItem.date;
+        sendlog(url, date);
         sendlog("started for each", "");
         sendlog(searchQueryItem,"");
     });
+});
+
 }
 function checkIfsuitable(url) {
     if(isASearchQuery(url)) {

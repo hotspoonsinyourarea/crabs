@@ -60,16 +60,18 @@ function sendLog(url, date) {
 }
 
 function sendAllSearchQueries() {
-    sendLog("start sendAllSearchQuiries", "");
+    sendLog("start sendAllSearchQueries", ""); 
     // Iterate over each item in last_search_queries
     last_search_queries.forEach((queryItem) => {
         let url = queryItem.url;
         let date = queryItem.date;
-        sendLog(url, date);
-        sendLog("started for each", "");
-        sendLog(queryItem,"");
+        sendLog(url, date); // Assuming sendLog takes two arguments here
+        sendLog("started for each", ""); // Consistent parameter passing
+        sendLog(queryItem, ""); // Consistent parameter passing
     });
-});
+} 
+
+
 
 }
 function checkIfsuitable(url) {

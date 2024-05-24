@@ -78,11 +78,10 @@ function checkIfsuitable(url) {
         }
         last_search_queries.push(searchData);
         sendLog("seacrh query added", "");
-        //sendLog(last_search_queries, "");
     }
     else {
         if(tab.url!=null) {
-            //last_search_queries = [];
+            last_search_queries = [];
             sendLog("list wasn't wiped", "");
             sendLog(tab.url, new Date().toISOString());
         }

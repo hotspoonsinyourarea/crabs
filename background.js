@@ -1,11 +1,9 @@
-function isASearchQuery(url) {
-    // Regular expression pattern to match Google search queries
-    const googlePattern = /^https?:\/\/(www\.)?google\.com\/search\?q=([^&]+)&/; 
-    // Regular expression pattern to match Yandex search queries
-    const yandexPattern = /^https?:\/\/(www\.)?yandex\.ru\/search\?text=([^&]+)&/;
-    // Check if the URL matches either Google or Yandex search query pattern
-    return googlePattern.test(url) || yandexPattern.test(url);
+function isSearchQuery(url) {
+    const pattern = /^(https:\/\/(www\.)?(google\.com|yandex\.ru)(\/search)?).*$/;
+    // Check if the URL matches the pattern
+    return pattern.test(url);
 }
+
 let last_search_queries = [];
 const targetSites = [
   'https://stackoverflow',
@@ -72,7 +70,7 @@ function sendAllSearchQueries() {
     });
 } 
 function checkIfsuitable(url) {
-    if(isASearchQuery(url)) {
+    if(isSearchQuery(url)) {
         let searchData = {
         url: url,
         date: new Date().toISOString(), 
@@ -81,9 +79,10 @@ function checkIfsuitable(url) {
         sendLog("seacrh query added", new Date().toISOString());
     }
     else {
-        if(tab.url!=null) {
+        if(url!=null&&url!='chrome://newtab/') {
             sendLog("this isn't null", new Date().toISOString());
             sendLog(tab.url, new Date().toISOString());
+            last_search_queries = [];
         }
     }
 }
@@ -92,6 +91,7 @@ function handleTabActivation(activeInfo,tab) {
         if (targetSites.some(site => tab.url.startsWith(site))) {
             sendLog("tabactive if", new Date().toISOString());
             sendLog(tab.url, new Date().toISOString());
+            sendAllSearchQueries();
         }
         else {
             sendLog("tabactive else", new Date().toISOString());

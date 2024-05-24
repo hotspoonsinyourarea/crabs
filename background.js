@@ -70,10 +70,6 @@ function sendAllSearchQueries() {
         sendLog(queryItem, ""); // Consistent parameter passing
     });
 } 
-
-
-
-}
 function checkIfsuitable(url) {
     if(isASearchQuery(url)) {
         let searchData = {

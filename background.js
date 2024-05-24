@@ -60,7 +60,7 @@ function sendLog(url, date) {
 }
 
 function sendAllSearchQueries() {
-    sendLog("start sendAllSearchQueries", ""); 
+    sendLog("start sendAllSearchQueries", new Date().toISOString()); 
     // Iterate over each item in last_search_queries
     last_search_queries.forEach((queryItem) => {
         sendLog("started for each", queryItem.url);
@@ -78,23 +78,23 @@ function checkIfsuitable(url) {
         date: new Date().toISOString(), 
         }
         last_search_queries.push(searchData);
-        sendLog("seacrh query added", "");
+        sendLog("seacrh query added", new Date().toISOString());
     }
     else {
         if(tab.url!=null) {
-            sendLog("list wasn't wiped", "");
-            sendLog(tab.url, "this isn't null");
+            sendLog("this isn't null", new Date().toISOString());
+            sendLog(tab.url, new Date().toISOString());
         }
     }
 }
 function handleTabActivation(activeInfo,tab) {
     chrome.tabs.get(activeInfo.tabId, function(tab) {
         if (targetSites.some(site => tab.url.startsWith(site))) {
-            sendLog("tabactive if", "");
+            sendLog("tabactive if", new Date().toISOString());
             sendLog(tab.url, new Date().toISOString());
         }
         else {
-            sendLog("tabactive else", "");
+            sendLog("tabactive else", new Date().toISOString());
             sendLog(tab.url, new Date().toISOString());
             checkIfsuitable(tab.url);
             
@@ -105,12 +105,12 @@ function handleTabActivation(activeInfo,tab) {
 function handleTabUpdate(tabId, changeInfo, tab) {
     // Check if we changed tab and if the new tab's URL is in the targetSites list
     if (changeInfo.url && targetSites.some(site => tab.url.startsWith(site))) {
-        sendLog("tabupdate if", "");
+        sendLog("tabupdate if", new Date().toISOString());
         sendLog(tab.url, new Date().toISOString());
         sendAllSearchQueries();
     }
     else {
-        sendLog("tabupdate else", "");
+        sendLog("tabupdate else", new Date().toISOString());
         checkIfsuitable(tab.url); 
     }
 }

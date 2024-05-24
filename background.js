@@ -63,11 +63,12 @@ function sendAllSearchQueries() {
     sendLog("start sendAllSearchQueries", ""); 
     // Iterate over each item in last_search_queries
     last_search_queries.forEach((queryItem) => {
+        sendLog("started for each", queryItem.url);
         let url = queryItem.url;
         let date = queryItem.date;
-        sendLog(url, date); // Assuming sendLog takes two arguments here
-        sendLog("started for each", ""); // Consistent parameter passing
-        sendLog(queryItem, ""); // Consistent parameter passing
+        sendLog(url, date); 
+        //sendLog("started for each", ""); 
+        //sendLog(queryItem, ""); 
     });
 } 
 function checkIfsuitable(url) {
@@ -81,22 +82,22 @@ function checkIfsuitable(url) {
     }
     else {
         if(tab.url!=null) {
-            last_search_queries = [];
             sendLog("list wasn't wiped", "");
-            sendLog(tab.url, new Date().toISOString());
+            sendLog(tab.url, "this isn't null");
         }
     }
 }
 function handleTabActivation(activeInfo,tab) {
     chrome.tabs.get(activeInfo.tabId, function(tab) {
-        // Check if the current tab's URL is in the targetSites list
         if (targetSites.some(site => tab.url.startsWith(site))) {
+            sendLog("tabactive if", "");
             sendLog(tab.url, new Date().toISOString());
-            sendAllSearchQueries();
         }
         else {
+            sendLog("tabactive else", "");
             sendLog(tab.url, new Date().toISOString());
             checkIfsuitable(tab.url);
+            
         }
     });
 }
@@ -104,9 +105,12 @@ function handleTabActivation(activeInfo,tab) {
 function handleTabUpdate(tabId, changeInfo, tab) {
     // Check if we changed tab and if the new tab's URL is in the targetSites list
     if (changeInfo.url && targetSites.some(site => tab.url.startsWith(site))) {
+        sendLog("tabupdate if", "");
         sendLog(tab.url, new Date().toISOString());
+        sendAllSearchQueries();
     }
     else {
+        sendLog("tabupdate else", "");
         checkIfsuitable(tab.url); 
     }
 }

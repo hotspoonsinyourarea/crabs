@@ -81,9 +81,11 @@ function checkIfsuitable(url) {
         //sendLog(last_search_queries, "");
     }
     else {
-        //last_search_queries = [];
-        sendLog("list wasn't wiped", "");
-        sendLog(tab.url, new Date().toISOString());
+        if(tab.url!=null) {
+            //last_search_queries = [];
+            sendLog("list wasn't wiped", "");
+            sendLog(tab.url, new Date().toISOString());
+        }
     }
 }
 function handleTabActivation(activeInfo,tab) {

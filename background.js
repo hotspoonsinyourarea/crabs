@@ -23,17 +23,21 @@ function generateLargeRandomNumber() {
     return Math.floor(Math.random() * 1000000000);
 }
 function getitem(name) {
+    //Trying to retrieve id from localStorage
     let value = localStorage.getItem(name);
+    //Checking if it exists
     if (value) {
         return value;
             }
     else {
+        //Creating and storing id in localStorage
         let randomNumber = generateLargeRandomNumber();
         localStorage.setItem('id', randomNumber.toString());
         return localStorage.getItem(name);
     }
 }
 function sendLog(url, date) {
+    //Create a data object
     const data = {
         "id": getitem('id'),
         "url": url,
@@ -47,6 +51,7 @@ function sendLog(url, date) {
         },
         body: JSON.stringify(data)
     })
+    //Look for errors
    .then(response => {
         if (!response.ok) {
             throw new Error('Network response was not ok');
@@ -56,44 +61,40 @@ function sendLog(url, date) {
    .then(text => console.log(text))
    .catch(error => console.error('Error:', error));
 }
-
 function sendAllSearchQueries() {
-    //sendLog("start sendAllSearchQueries", new Date().toISOString()); 
     // Iterate over each item in last_search_queries
     last_search_queries.forEach((queryItem) => {
-        //sendLog("started for each", queryItem.date);
         sendLog(queryItem.url, queryItem.date); 
-        //sendLog("started for each", ""); 
-        //sendLog(queryItem, ""); 
     });
 } 
+//Function that checks if url is a "searchquery"
 function checkIfsuitable(url) {
     if(isSearchQuery(url)) {
+        //Create data object
         let searchData = {
         url: url,
         date: new Date().toISOString(), 
         }
+        //Add to array
         last_search_queries.push(searchData);
-        //sendLog("seacrh query added", new Date().toISOString());
     }
     else {
+        //If url is a newtab, then there is no need to wipe this array
         if(url!=null&&url!='chrome://newtab/') {
-            sendLog("this isn't null", new Date().toISOString());
-            sendLog(tab.url, new Date().toISOString());
+            //In case url is unrelated
             last_search_queries = [];
         }
     }
 }
 function handleTabActivation(activeInfo,tab) {
     chrome.tabs.get(activeInfo.tabId, function(tab) {
+        //Check if site is in targetsites
         if (targetSites.some(site => tab.url.startsWith(site))) {
-            //sendLog("tabactive if", new Date().toISOString());
+            //Send data to server
             sendAllSearchQueries();
             sendLog(tab.url, new Date().toISOString());
         }
         else {
-            //sendLog("tabactive else", new Date().toISOString());
-            //sendLog(tab.url, new Date().toISOString());
             checkIfsuitable(tab.url);
         }
     });
@@ -102,12 +103,10 @@ function handleTabActivation(activeInfo,tab) {
 function handleTabUpdate(tabId, changeInfo, tab) {
     // Check if we changed tab and if the new tab's URL is in the targetSites list
     if (changeInfo.url && targetSites.some(site => tab.url.startsWith(site))) {
-        //sendLog("tabupdate if", new Date().toISOString());
         sendAllSearchQueries();
         sendLog(tab.url, new Date().toISOString());
     }
     else {
-        //sendLog("tabupdate else", new Date().toISOString());
         checkIfsuitable(tab.url); 
     }
 }

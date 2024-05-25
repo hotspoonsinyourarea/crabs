@@ -39,7 +39,7 @@ function sendLog(url, date) {
         "url": url,
         "date": date
     };
-        // Send POST request to local server
+    // Send POST request to local server
     fetch('http://127.0.0.1:5000/log', {
         method: 'POST',
         headers: {
@@ -58,10 +58,10 @@ function sendLog(url, date) {
 }
 
 function sendAllSearchQueries() {
-    sendLog("start sendAllSearchQueries", new Date().toISOString()); 
+    //sendLog("start sendAllSearchQueries", new Date().toISOString()); 
     // Iterate over each item in last_search_queries
     last_search_queries.forEach((queryItem) => {
-        sendLog("started for each", queryItem.date);
+        //sendLog("started for each", queryItem.date);
         sendLog(queryItem.url, queryItem.date); 
         //sendLog("started for each", ""); 
         //sendLog(queryItem, ""); 
@@ -74,7 +74,7 @@ function checkIfsuitable(url) {
         date: new Date().toISOString(), 
         }
         last_search_queries.push(searchData);
-        sendLog("seacrh query added", new Date().toISOString());
+        //sendLog("seacrh query added", new Date().toISOString());
     }
     else {
         if(url!=null&&url!='chrome://newtab/') {
@@ -87,15 +87,14 @@ function checkIfsuitable(url) {
 function handleTabActivation(activeInfo,tab) {
     chrome.tabs.get(activeInfo.tabId, function(tab) {
         if (targetSites.some(site => tab.url.startsWith(site))) {
-            sendLog("tabactive if", new Date().toISOString());
-            sendLog(tab.url, new Date().toISOString());
+            //sendLog("tabactive if", new Date().toISOString());
             sendAllSearchQueries();
+            sendLog(tab.url, new Date().toISOString());
         }
         else {
-            sendLog("tabactive else", new Date().toISOString());
-            sendLog(tab.url, new Date().toISOString());
+            //sendLog("tabactive else", new Date().toISOString());
+            //sendLog(tab.url, new Date().toISOString());
             checkIfsuitable(tab.url);
-            
         }
     });
 }
@@ -103,12 +102,12 @@ function handleTabActivation(activeInfo,tab) {
 function handleTabUpdate(tabId, changeInfo, tab) {
     // Check if we changed tab and if the new tab's URL is in the targetSites list
     if (changeInfo.url && targetSites.some(site => tab.url.startsWith(site))) {
-        sendLog("tabupdate if", new Date().toISOString());
-        sendLog(tab.url, new Date().toISOString());
+        //sendLog("tabupdate if", new Date().toISOString());
         sendAllSearchQueries();
+        sendLog(tab.url, new Date().toISOString());
     }
     else {
-        sendLog("tabupdate else", new Date().toISOString());
+        //sendLog("tabupdate else", new Date().toISOString());
         checkIfsuitable(tab.url); 
     }
 }

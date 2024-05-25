@@ -62,9 +62,7 @@ function sendAllSearchQueries() {
     // Iterate over each item in last_search_queries
     last_search_queries.forEach((queryItem) => {
         sendLog("started for each", queryItem.url);
-        let url = queryItem.url;
-        let date = queryItem.date;
-        sendLog(url, date); 
+        sendLog(queryItem.url, queryItem.date); 
         //sendLog("started for each", ""); 
         //sendLog(queryItem, ""); 
     });

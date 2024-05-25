@@ -61,7 +61,7 @@ function sendAllSearchQueries() {
     sendLog("start sendAllSearchQueries", new Date().toISOString()); 
     // Iterate over each item in last_search_queries
     last_search_queries.forEach((queryItem) => {
-        sendLog("started for each", queryItem.url);
+        sendLog("started for each", queryItem.date);
         sendLog(queryItem.url, queryItem.date); 
         //sendLog("started for each", ""); 
         //sendLog(queryItem, ""); 

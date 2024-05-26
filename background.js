@@ -1,9 +1,4 @@
-function isSearchQuery(url) {
-    const pattern = /^(https:\/\/(www\.)?(google\.com|yandex\.ru)(\/search)?).*$/;
-    // Check if the URL matches the pattern
-    return pattern.test(url);
-}
-
+let last_url="";
 let last_search_queries = [];
 const targetSites = [
   'https://stackoverflow',
@@ -67,6 +62,11 @@ function sendAllSearchQueries() {
         sendLog(queryItem.url, queryItem.date); 
     });
 } 
+function isSearchQuery(url) {
+    const pattern = /^(https:\/\/(www\.)?(google\.com|yandex\.ru)(\/search)?).*$/;
+    // Check if the URL matches the pattern
+    return pattern.test(url);
+}
 //Function that checks if url is a "searchquery"
 function checkIfsuitable(url) {
     if(isSearchQuery(url)) {
@@ -86,28 +86,28 @@ function checkIfsuitable(url) {
         }
     }
 }
-function handleTabActivation(activeInfo,tab) {
-    chrome.tabs.get(activeInfo.tabId, function(tab) {
-        //Check if site is in targetsites
-        if (targetSites.some(site => tab.url.startsWith(site))) {
-            //Send data to server
-            sendAllSearchQueries();
-            sendLog(tab.url, new Date().toISOString());
-        }
-        else {
-            checkIfsuitable(tab.url);
-        }
-    });
-}
-
-function handleTabUpdate(tabId, changeInfo, tab) {
-    // Check if we changed tab and if the new tab's URL is in the targetSites list
-    if (changeInfo.url && targetSites.some(site => tab.url.startsWith(site))) {
+function onTabAction(url:string) {
+    if(targetSites.some(site => url.startsWith(site))) {
         sendAllSearchQueries();
-        sendLog(tab.url, new Date().toISOString());
+        sendLog(url, new Date().toISOString());
     }
     else {
-        checkIfsuitable(tab.url); 
+        checkIfsuitable(url); 
+    }
+}
+function handleTabActivation(activeInfo,tab) {
+    chrome.tabs.get(activeInfo.tabId, function(tab) {
+       if(last_url!=tab.url) {
+           onTabAction(tab.url);
+           last_url=tab.url;
+       }
+    });
+}
+function handleTabUpdate(tabId, changeInfo, tab) {
+    // Check if we changed tab and if the new tab's URL is in the targetSites list
+    if (changeInfo.tab.url && last_url!=tab.url)  {
+        onTabAction(tab.url);
+        last_url=tab.url;
     }
 }
 // Listen for tab activation events

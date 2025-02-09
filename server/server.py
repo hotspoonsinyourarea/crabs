@@ -19,7 +19,7 @@ else:
     TG_TOKEN = bot = None
 
 class Log(SQLModel, table=True):
-    log_id: str | None = Field(primary_key=True, default=None)
+    log_id: int | None = Field(primary_key=True, default=None)
     user_id: str
     ip: str
     url: str

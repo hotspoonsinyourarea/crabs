@@ -19,7 +19,8 @@ else:
     TG_TOKEN = bot = None
 
 class Log(SQLModel, table=True):
-    id: str = Field(primary_key=True)
+    log_id: str | None = Field(primary_key=True, default=None)
+    user_id: str
     ip: str
     url: str
     date: str
@@ -55,7 +56,7 @@ def log():
     with Session(engine) as session:
         try:
             incoming_log = Log(
-                id=data['id'],
+                user_id=data['id'],
                 url=data['url'],
                 date=data['date'],
                 ip=request.remote_addr
@@ -72,4 +73,4 @@ def log():
 
 if __name__ == '__main__':
     SQLModel.metadata.create_all(engine)
-    app.run(host='127.0.0.1', port=5000, debug=True)
+    app.run(host='176.119.159.118', port=5000, debug=True)

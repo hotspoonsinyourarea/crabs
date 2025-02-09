@@ -1,4 +1,10 @@
 
+
+USE_DEBUG_BOT = True
+
+
+import os
+import telebot
 from flask import Flask, request, jsonify
 from sqlmodel import SQLModel, Field, create_engine, Session
 
@@ -6,6 +12,11 @@ from sqlmodel import SQLModel, Field, create_engine, Session
 app = Flask(__name__)
 engine = create_engine('sqlite:///logs.db', echo=False)
 
+if USE_DEBUG_BOT:
+    TG_TOKEN = os.environ['CRABS_TG_TOKEN']
+    bot = telebot.TeleBot(token=TG_TOKEN)
+else:
+    TG_TOKEN = bot = None
 
 class Log(SQLModel, table=True):
     id: str = Field(primary_key=True)
@@ -13,10 +24,31 @@ class Log(SQLModel, table=True):
     url: str
     date: str
 
+class TGDebugUser(SQLModel, table=True):
+    user_id: str = Field(primary_key=True)
+
+def sendTgUserMessage(message: str, user: TGDebugUser):
+    try:
+        assert bot
+        bot.send_message(
+            chat_id=user.user_id,
+            text=message
+        )
+    except:
+        pass
+
+def sendAllUsers(message: str):
+    with Session(engine) as sess:
+        for user in sess.query(TGDebugUser):
+            sendTgUserMessage(message, user)
+
 @app.route('/log', methods=['POST'])
 def log():
     data = request.get_json()
     
+    if USE_DEBUG_BOT:
+        sendAllUsers(str(request.remote_addr) + '\n' + str(request.get_data()))
+
     if not data or not request.remote_addr:
         return jsonify({"error": "invalid format"}), 400
 

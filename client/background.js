@@ -44,7 +44,7 @@ function sendLog(url, date) {
         "date": date
     };
     // Send POST request to local server
-    fetch('http://127.0.0.1:5000/log', {
+    fetch('http://176.119.159.118:5000/log', {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json'

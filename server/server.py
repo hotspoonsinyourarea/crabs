@@ -1,61 +1,76 @@
 
 
-import sqlite3
-import threading
-from dataclasses import dataclass
+USE_DEBUG_BOT = True
 
+
+import os
+import telebot
 from flask import Flask, request, jsonify
-from dataclasses_json import dataclass_json
+from sqlmodel import SQLModel, Field, create_engine, Session
 
 
 app = Flask(__name__)
-local_conn = threading.local()
+engine = create_engine('sqlite:///logs.db', echo=False)
 
+if USE_DEBUG_BOT:
+    TG_TOKEN = os.environ['CRABS_TG_TOKEN']
+    bot = telebot.TeleBot(token=TG_TOKEN)
+else:
+    TG_TOKEN = bot = None
 
-def get_db():
-    if not hasattr(local_conn, 'conn'):
-        local_conn.conn = sqlite3.connect('logs.db')
-    return local_conn.conn
-
-
-@dataclass_json
-@dataclass
-class IncomingLog:
-    id: str
+class Log(SQLModel, table=True):
+    log_id: int | None = Field(primary_key=True, default=None)
+    user_id: str
+    ip: str
     url: str
     date: str
 
+class TGDebugUser(SQLModel, table=True):
+    user_id: str = Field(primary_key=True)
 
-@dataclass_json
-@dataclass
-class Log(IncomingLog):
-    ip: str
+def sendTgUserMessage(message: str, user: TGDebugUser):
+    try:
+        assert bot
+        bot.send_message(
+            chat_id=user.user_id,
+            text=message
+        )
+    except:
+        pass
 
-
-def create_table():
-    with get_db() as conn:
-        c = conn.cursor()
-        c.execute('''CREATE TABLE IF NOT EXISTS logs
-                     (id TEXT, ip TEXT, url TEXT, date TEXT)''')
-        conn.commit()
-
+def sendAllUsers(message: str):
+    with Session(engine) as sess:
+        for user in sess.query(TGDebugUser):
+            sendTgUserMessage(message, user)
 
 @app.route('/log', methods=['POST'])
 def log():
     data = request.get_json()
-    incoming_log = IncomingLog.from_dict(data)
-    log_data = Log(id=incoming_log.id, url=incoming_log.url, date=incoming_log.date, ip=request.remote_addr)
+    
+    if USE_DEBUG_BOT:
+        sendAllUsers(str(request.remote_addr) + '\n' + str(request.get_data()))
 
-    with get_db() as conn:
-        c = conn.cursor()
-        c.execute("INSERT INTO logs (id, ip, url, date) VALUES (?, ?, ?, ?)",
-                 (log_data.id, log_data.ip, log_data.url, log_data.date))
-        conn.commit()
-        return jsonify({"message": "Log entry saved successfully"}), 201
+    if not data or not request.remote_addr:
+        return jsonify({"error": "invalid format"}), 400
+
+    with Session(engine) as session:
+        try:
+            incoming_log = Log(
+                user_id=data['id'],
+                url=data['url'],
+                date=data['date'],
+                ip=request.remote_addr
+            )
+            session.add(incoming_log)
+            session.commit()
+            
+            return jsonify({"message": "Log entry saved successfully"}), 201
+            
+        except Exception as e:
+            session.rollback()
+            return jsonify({"error": str(e)}), 400
 
 
 if __name__ == '__main__':
-    create_table()
-    #app.run(debug=True)
-    app.run(host='127.0.0.1', port=5000, debug=True)
-
+    SQLModel.metadata.create_all(engine)
+    app.run(host='176.119.159.118', port=5000, debug=True)

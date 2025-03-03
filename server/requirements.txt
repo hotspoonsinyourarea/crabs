@@ -1,2 +1,4 @@
 dataclasses-json
 Flask
+sqlmodel
+pyTelegramBotAPI
